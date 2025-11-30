@@ -1,7 +1,7 @@
-name: StaffChat
-description: Staff Chat beta plugin
+name: ${project.name}
+description: ${project.description}
 main: dev.oxs.staffchat.StaffChat
-version: 2.0.0
+version: ${project.version}
 authors:
   - oxs
 depend: [ ]
