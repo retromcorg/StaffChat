@@ -28,6 +28,9 @@ public class StaffChat extends JavaPlugin implements Listener {
 
     private HashMap<UUID, Boolean> staffChatToggled = new HashMap<>();
 
+    private DiscordBridge discordBridge;
+    //TODO upgrade to Discord Core 5 when support is EOL
+
     @Override
     public void onEnable() {
         plugin = this;
@@ -51,22 +54,40 @@ public class StaffChat extends JavaPlugin implements Listener {
 
         pluginName = pdf.getName();
 
+        discordBridge = new DiscordBridge(plugin);
+        discordBridge.start();
+
         log.info("[" + pluginName + "] Is Loading, Version: " + pdf.getVersion());
     }
 
 
     @Override
     public void onDisable() {
+        if (discordBridge != null) discordBridge.stop();
         log.info(pluginName + " has been disabled.");
     }
 
     public void StaffChatMessage(Player sender, String message) {
+        String name = StaffChatSettings.getInstance(plugin).getConfigBoolean("settings.staffchat-use-displayNamesStaffChat")
+                ? sender.getDisplayName() : sender.getName();
+        String formatted = plugin.getPluginPrefix() + " " + ChatColor.WHITE + name + ": " + ChatColor.WHITE + printColours(message);
         for (Player onlinePlayer : getServer().getOnlinePlayers()) {
             if (onlinePlayer.hasPermission("staffchat.see") || onlinePlayer.isOp()) {
-                Boolean useDisplayName = StaffChatSettings.getInstance(plugin).getConfigBoolean("settings.staffchat-use-displayNamesStaffChat");
-                onlinePlayer.sendMessage(plugin.getPluginPrefix() + " " + ChatColor.WHITE + (useDisplayName ? sender.getDisplayName() : sender.getName()) + ": " + ChatColor.WHITE + printColours(message));
+                onlinePlayer.sendMessage(formatted);
             }
         }
+        if (discordBridge != null) discordBridge.sendToDiscord(name, message);
+    }
+
+    public void staffChatMessageFromDiscord(String discordUsername, String message) {
+        String discordPrefix = printColours(StaffChatSettings.getInstance(plugin).getConfigString("discord.discord-prefix"));
+        String formatted = discordPrefix + " " + ChatColor.WHITE + discordUsername + ": " + ChatColor.WHITE + printColours(message);
+        for (Player onlinePlayer : getServer().getOnlinePlayers()) {
+            if (onlinePlayer.hasPermission("staffchat.see") || onlinePlayer.isOp()) {
+                onlinePlayer.sendMessage(formatted);
+            }
+        }
+        log.info("[StaffChat][Discord] " + discordUsername + ": " + message);
     }
 
     public void PublicChatMessage(Player sender, String message) {

@@ -23,6 +23,10 @@ public class StaffChatSettings extends Configuration {
         generateConfigOption("settings.staffchat-use-displayNamesStaffChat", false);
         generateConfigOption("settings.staffchat-use-displayNamesPublicChat", true);
         generateConfigOption("settings.staffchat-publicChatPrefix", "&f<%player%&f> ");
+        //Discord Bridge (requires DiscordCore-4)
+        generateConfigOption("discord.enabled", false);
+        generateConfigOption("discord.channel-id", "none");
+        generateConfigOption("discord.discord-prefix", "&d[&9D&dStaffChat]&f");
     }
 
     public void generateConfigOption(String key, Object defaultValue) {

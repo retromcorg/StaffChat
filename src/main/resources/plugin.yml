@@ -5,6 +5,7 @@ version: ${project.version}
 authors:
   - oxs
 depend: [ ]
+softdepend: [ DiscordCore ]
 
 commands:
   StaffChatCommand:
