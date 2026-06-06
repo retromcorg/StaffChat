@@ -29,6 +29,7 @@ public class StaffChat extends JavaPlugin implements Listener {
     private HashMap<UUID, Boolean> staffChatToggled = new HashMap<>();
 
     private DiscordBridge discordBridge;
+    //TODO upgrade to Discord Core 5 when support is EOL
 
     @Override
     public void onEnable() {
