@@ -70,12 +70,17 @@ public class StaffChat extends JavaPlugin implements Listener {
     public void StaffChatMessage(Player sender, String message) {
         String name = StaffChatSettings.getInstance(plugin).getConfigBoolean("settings.staffchat-use-displayNamesStaffChat")
                 ? sender.getDisplayName() : sender.getName();
+        StaffChatMessage(name, message);
+    }
+
+    public void StaffChatMessage(String name, String message) {
         String formatted = plugin.getPluginPrefix() + " " + ChatColor.WHITE + name + ": " + ChatColor.WHITE + printColours(message);
         for (Player onlinePlayer : getServer().getOnlinePlayers()) {
             if (onlinePlayer.hasPermission("staffchat.see") || onlinePlayer.isOp()) {
                 onlinePlayer.sendMessage(formatted);
             }
         }
+        log.info(ChatColor.stripColor(formatted));
         if (discordBridge != null) discordBridge.sendToDiscord(name, message);
     }
 
