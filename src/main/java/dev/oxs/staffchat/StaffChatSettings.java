@@ -26,7 +26,7 @@ public class StaffChatSettings extends Configuration {
         //Discord Bridge (requires DiscordCore-4)
         generateConfigOption("discord.enabled", false);
         generateConfigOption("discord.channel-id", "none");
-        generateConfigOption("discord.discord-prefix", "&d[&9D&dStaffChat]&f");
+        generateConfigOption("discord.discord-prefix", "&5{&9D &dStaffChat&5}&f");
     }
 
     public void generateConfigOption(String key, Object defaultValue) {

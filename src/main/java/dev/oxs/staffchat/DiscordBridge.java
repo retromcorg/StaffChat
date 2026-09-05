@@ -8,24 +8,13 @@ import org.bukkit.Bukkit;
 
 import java.util.logging.Logger;
 
-/**
- * Bridges StaffChat ↔ Discord via DiscordCore-4.
- *
- * The JDA listener anonymous class (DiscordBridge$1) is a separate .class file
- * compiled by javac. It is only loaded by the JVM when start() executes the
- * "new ListenerAdapter(){}" expression — by which point DiscordCore (and its
- * shaded JDA) are guaranteed to be in the plugin classloader graph.
- *
- * DiscordBridge itself has NO JDA references in its own class definition, so
- * it loads cleanly even if DiscordCore is absent.
- */
 public class DiscordBridge {
 
     private final StaffChat plugin;
     private final Logger log;
     private DiscordBot discordBot;
     private String channelId;
-    private Object jdaListener; // typed as Object so this class has no JDA dependency
+    private Object jdaListener;
 
     public DiscordBridge(StaffChat plugin) {
         this.plugin = plugin;
@@ -56,11 +45,6 @@ public class DiscordBridge {
         }
     }
 
-    /**
-     * Separated into its own method so the anonymous ListenerAdapter subclass
-     * (which lives in DiscordBridge$1.class) is only resolved when this method
-     * is called, not when DiscordBridge.class is first loaded.
-     */
     private void registerJdaListener() {
         final String targetChannel = this.channelId;
         ListenerAdapter listener = new ListenerAdapter() {
@@ -72,12 +56,7 @@ public class DiscordBridge {
                 final String username = event.getAuthor().getName();
                 final String message = event.getMessage().getContentRaw();
 
-                Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-                    @Override
-                    public void run() {
-                        plugin.staffChatMessageFromDiscord(username, message);
-                    }
-                });
+                Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> plugin.staffChatMessageFromDiscord(username, message));
             }
         };
         discordBot.getJda().addEventListener(listener);
@@ -92,7 +71,6 @@ public class DiscordBridge {
         }
     }
 
-    /** Forward an in-game staff chat message to the Discord channel. */
     public void sendToDiscord(String playerName, String message) {
         if (discordBot == null) return;
         discordBot.discordSendToChannel(channelId, "**[StaffChat]** " + playerName + ": " + message);

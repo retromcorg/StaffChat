@@ -26,6 +26,12 @@ public class StaffChatUsage implements CommandExecutor {
 
         if (strings.length > 0) {
             String message = String.join(" ", strings);
+
+            if (!(commandSender instanceof Player)) {
+                plugin.StaffChatMessage("Console", message);
+                return true;
+            }
+
             Player player = (Player) commandSender;
             Boolean t = plugin.getToggleStatus(player.getUniqueId());
 
