@@ -3,7 +3,6 @@ package dev.oxs.staffchat;
 import dev.oxs.staffchat.commands.*;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.craftbukkit.CraftServer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerChatEvent;
@@ -29,7 +28,6 @@ public class StaffChat extends JavaPlugin implements Listener {
     private HashMap<UUID, Boolean> staffChatToggled = new HashMap<>();
 
     private DiscordBridge discordBridge;
-    //TODO upgrade to Discord Core 5 when support is EOL
 
     @Override
     public void onEnable() {
@@ -115,7 +113,7 @@ public class StaffChat extends JavaPlugin implements Listener {
         }
 
         String formattedMessage = String.format(event.getFormat(), event.getPlayer().getDisplayName(), event.getMessage());
-        ((CraftServer) Bukkit.getServer()).getServer().console.sendMessage(formattedMessage); // Log to console
+        log.info(ChatColor.stripColor(formattedMessage)); // Log to console
         for (Player recipient : event.getRecipients()) {
             recipient.sendMessage(formattedMessage);
         }

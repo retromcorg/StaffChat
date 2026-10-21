@@ -4,8 +4,9 @@ main: dev.oxs.staffchat.StaffChat
 version: ${project.version}
 authors:
   - oxs
+  - Garsooon
 depend: [ ]
-softdepend: [ DiscordCore ]
+softdepend: [ DiscordCore-6 ]
 
 commands:
   StaffChatCommand:
